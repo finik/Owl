@@ -10,6 +10,16 @@ not be paid for. An LP that ends without a verdict is now solved again with the 
 method, then the primal simplex, which settle such a model either way. On a set of historical
 market sequences that hit this, both agree the plan is infeasible, as MOSEK does on the same case;
 plans the default solves are untouched.
+#### Fixed: falling back on an earlier iterate takes the most settled one, not the richest
+
+When an iterate of the self-consistent loop cannot be solved even with a shortened parameter
+step, the loop falls back on an earlier one. It took the one with the best objective. On a tight
+case the costs the loop feeds back (premiums, ACA costs, NIIT, the taxable part of Social Security,
+LTCG bracket room) start at nothing and catch up pass by pass, so the best objective belongs to the
+iterate least charged for what its own income brings: a case heading from \$6.6M down to a few
+thousand dollars reported \$1.1M, and a lower spending floor could report less left at the end
+than a higher one. The fallback now takes the iterate whose own income moves its parameters least,
+the latest of those tied, and every iterate's residual is kept in the trace.
 
 #### New: health care in the MCP, from setting it to explaining it
 
